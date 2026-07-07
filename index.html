@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ashwika Jani</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F1ECDE; --paper-deep:#E7E0CC;
+    --ink:#202B22; --ink-soft:#4A5548;
+    --green:#2F4A3D; --green-deep:#1F332A;
+    --gold:#A9772E; --gold-deep:#8A5F22; --gold-leaf:#D2AD5E; --leaf-pink:#EDB6C6;
+    --line:rgba(32,43,34,0.15); --radius:3px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:500;letter-spacing:-0.01em;color:var(--green-deep);}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  header.site-nav{position:sticky;top:0;z-index:50;background:rgba(241,236,222,0.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+  .nav-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 28px;}
+  .wordmark{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-0.01em;}
+  .wordmark span{color:var(--gold);}
+  nav.links{display:flex;gap:6px;align-items:center;}
+  nav.links button{background:none;border:none;cursor:pointer;font-size:13.5px;color:var(--ink-soft);padding:8px 14px;border-radius:20px;transition:background .15s,color .15s;}
+  nav.links button:hover{background:var(--paper-deep);color:var(--ink);}
+  nav.links button.active{background:var(--green-deep);color:var(--paper);}
+  .nav-toggle{display:none;background:none;border:1px solid var(--line);border-radius:20px;padding:8px 12px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;}
+  @media (max-width:760px){
+    nav.links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);flex-direction:column;align-items:stretch;padding:8px 20px 16px;border-bottom:1px solid var(--line);}
+    nav.links.open{display:flex;}
+    nav.links button{text-align:left;}
+    .nav-toggle{display:inline-block;}
+  }
+
+  main{max-width:1180px;margin:0 auto;padding:0 28px;}
+  .page{display:none;padding-top:40px;padding-bottom:96px;}
+  .page.active{display:block;}
+
+  .fact-card{margin:30px 0 6px;border:1px solid var(--line);background:var(--paper-deep);border-radius:var(--radius);padding:17px 22px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;}
+  .fact-card .eyebrow{white-space:nowrap;}
+  .fact-card p{margin:0;font-size:14.5px;color:var(--ink);line-height:1.5;}
+
+  .hero{display:grid;grid-template-columns:1.02fr 1fr;gap:30px;align-items:center;margin-top:14px;}
+  .hero h1{font-size:45px;line-height:1.08;margin:0 0 18px;}
+  .hero p.lede{font-size:16.5px;color:var(--ink-soft);max-width:46ch;line-height:1.6;margin:0 0 22px;}
+  .hero-photo-wrap{display:flex;justify-content:center;}
+  .hero-photo{width:100%;max-width:360px;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:2px;border:1px solid var(--line);box-shadow:0 0 0 5px var(--paper),0 10px 28px rgba(32,43,34,0.18);}
+  @media (max-width:860px){.hero-photo{max-width:300px;}}
+  .tree-section{margin-top:70px;padding-top:44px;border-top:1px solid var(--line);text-align:center;}
+  .tree-section .eyebrow{display:block;margin-bottom:6px;}
+  .tree-section h2{font-size:26px;margin:0 0 4px;}
+  .tree-section .sub{color:var(--ink-soft);font-size:14px;margin:0 auto 8px;max-width:44ch;}
+  .tree-section .tree-wrap{max-width:640px;margin:10px auto 0;}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line);border-radius:20px;padding:5px 11px;color:var(--ink-soft);}
+
+  .tree-wrap{position:relative;}
+  .tree-wrap svg{width:100%;height:auto;display:block;overflow:visible;}
+  .leaf{fill:var(--gold-leaf);}
+  .leaf-label{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:14.5px;fill:var(--green-deep);}
+  .leaf-node{cursor:pointer;}
+  .leaf-node .node-leaf{fill:var(--gold);transition:fill .18s ease, transform .18s ease;transform-box:fill-box;transform-origin:center;}
+  .leaf-node:hover .node-leaf,.leaf-node:focus-visible .node-leaf{fill:var(--leaf-pink);transform:scale(1.35);}
+  .leaf-node:hover .leaf-label{fill:var(--gold-deep);}
+  .hit{fill:transparent;}
+  .tree-hint{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:10px;letter-spacing:0.04em;}
+
+  @media (max-width:860px){.hero{grid-template-columns:1fr;}.hero h1{font-size:33px;}.tree-wrap{max-width:460px;margin:0 auto;}}
+
+  .page-head{margin-bottom:34px;}
+  .page-head h2{font-size:32px;margin:6px 0 10px;}
+  .page-head p{color:var(--ink-soft);max-width:62ch;font-size:15px;line-height:1.6;margin:0;}
+
+  .card{border:1px solid var(--line);border-radius:var(--radius);padding:22px 26px;margin-bottom:16px;background:rgba(255,255,255,0.26);}
+  .card-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
+  .card h3{font-size:18.5px;margin:0;}
+  .card .meta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);white-space:nowrap;}
+  .card p{font-size:14.5px;line-height:1.65;color:var(--ink-soft);margin:8px 0 0;}
+  .card .role{font-size:12.5px;color:var(--ink);font-weight:500;margin-top:2px;display:block;font-family:'IBM Plex Mono',monospace;letter-spacing:0.02em;}
+
+  .pub-list{border:1px solid var(--line);border-radius:var(--radius);padding:6px 24px;background:rgba(255,255,255,0.26);}
+  .pub{display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .pub:last-child{border-bottom:none;}
+  .pub .t{font-family:'Fraunces',serif;font-size:15.5px;color:var(--green-deep);max-width:60ch;}
+  .pub .v{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);white-space:nowrap;align-self:center;}
+  .subhead{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-soft);margin:30px 0 12px;}
+  .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:16px;}
+  .proj{border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;background:rgba(255,255,255,0.26);display:flex;flex-direction:column;}
+  .proj .ptag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .proj h3{font-size:18.5px;margin:0 0 8px;}
+  .proj p{font-size:14px;line-height:1.6;color:var(--ink-soft);margin:0 0 16px;flex:1;}
+  .pbtn{align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.04em;text-decoration:none;padding:8px 15px;border-radius:20px;border:1px solid var(--green-deep);background:var(--green-deep);color:var(--paper);transition:opacity .15s ease;}
+  .pbtn:hover{opacity:0.85;}
+  .pbtn.soon{background:transparent;color:var(--ink-soft);border:1px dashed var(--line);cursor:default;}
+
+  .post{border-bottom:1px solid var(--line);padding:22px 0;cursor:pointer;}
+  .post:last-child{border-bottom:none;}
+  .post-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;}
+  .post h3{font-size:20px;margin:0;}
+  .post .date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);}
+  .post .excerpt{font-size:14.5px;color:var(--ink-soft);margin:8px 0 0;line-height:1.6;}
+  .post .full{display:none;font-size:14.5px;color:var(--ink);line-height:1.75;margin-top:14px;max-width:68ch;}
+  .post.open .full{display:block;}
+  .post-note{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);border:1px dashed var(--line);border-radius:var(--radius);padding:10px 14px;margin-bottom:22px;}
+
+  footer{border-top:1px solid var(--line);padding:26px 28px;text-align:center;}
+  footer p{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin:0;}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ashwika Jani",
+  "url": "https://ashwikajani.com",
+  "image": "https://ashwikajani.com/ashwika-jani.jpg",
+  "jobTitle": "Medical Student",
+  "description": "Physician-in-training in UMKC's six-year BA/MD program, researcher, founder of community health and education projects, and a songwriter and poet.",
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "University of Missouri-Kansas City"
+  },
+  "worksFor": {
+    "@type": "CollegeOrUniversity",
+    "name": "University of Missouri-Kansas City School of Medicine"
+  },
+  "knowsLanguage": [
+    "English",
+    "Hindi",
+    "Gujarati",
+    "Punjabi",
+    "Spanish"
+  ],
+  "knowsAbout": [
+    "Medicine",
+    "Neuroscience",
+    "Public Health",
+    "Songwriting",
+    "Poetry"
+  ],
+  "sameAs": [
+    "https://open.spotify.com/artist/7tgRyLMm6cRL1bFj89D8MN",
+    "https://music.apple.com/us/artist/ashwika-jani/1766464730",
+    "https://www.iheart.com/artist/ashwika-jani-43904225/",
+    "https://www.linkedin.com/in/ashwika-jani-01398b23a/"
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <div class="wordmark">Ashwika Jani <span>&middot;</span></div>
+    <button class="nav-toggle" id="navToggle">menu</button>
+    <nav class="links" id="navLinks">
+      <button data-page="home" class="active">Home</button>
+      <button data-page="research">Research</button>
+      <button data-page="projects">Projects</button>
+      <button data-page="nonprofit">Community</button>
+      <button data-page="music">Music &amp; Poetry</button>
+      <button data-page="blog">Field Notes</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="page active" id="page-home">
+    <div class="fact-card">
+      <span class="eyebrow">Fact of the day</span>
+      <p id="factText">Loading&hellip;</p>
+    </div>
+
+    <div class="hero">
+      <div>
+        <span class="eyebrow">Kansas City, MO &middot; BA/MD 2031</span>
+        <h1>Medicine is the trunk.<br>Everything else is how it branches.</h1>
+        <p class="lede">I'm a first-year in UMKC's six-year BA/MD program, a researcher, and a founder of community health and education projects. On the side that doesn't fit neatly on a CV, I'm a songwriter and poet. This site is roughly the shape of how those grow together.</p>
+        <div class="tags">
+          <span class="tag">Clinical &amp; Research</span>
+          <span class="tag">Community Health</span>
+          <span class="tag">Music &amp; Poetry</span>
+          <span class="tag">English &middot; Hindi &middot; Gujarati &middot; Punjabi &middot; Spanish</span>
+        </div>
+      </div>
+
+      <div class="hero-photo-wrap">
+        <img class="hero-photo" src="data:image/jpeg;base64,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" alt="Ashwika Jani, medical student, researcher, and musician">
+      </div>
+    </div>
+
+    <div class="tree-section">
+      <h2>A map of me</h2>
+      <p class="sub">The parts of my life, and how they branch from the same root. Tap a leaf to jump in.</p>
+      <div class="tree-wrap">
+        <div id="treeMount"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section class="page" id="page-research">
+    <div class="page-head">
+      <span class="eyebrow">Fig. 1 &mdash; Research</span>
+      <h2>Research</h2>
+      <p>Interests across molecular neuroscience, translational microbiology, and medical device design. A brief overview here &mdash; happy to talk specifics in person.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>Ion Channel Neurobiology &amp; Ischemic Brain Injury</h3>
+        <span class="meta">UMKC School of Medicine</span>
+      </div>
+      <span class="role">Research Assistant</span>
+      <p>Studying ion-channel mechanisms of neuronal injury relevant to stroke and acute neurologic conditions.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>Colorimetric Infection-Detecting Wound Dressing</h3>
+        <span class="meta">UMKC</span>
+      </div>
+      <span class="role">Principal Investigator</span>
+      <p>Developing a low-cost wound dressing for earlier detection and targeted treatment of infection, aimed at high-risk and underserved patients.</p>
+    </div>
+
+    <p class="subhead">Published &amp; presented</p>
+    <div class="pub-list">
+      <div class="pub"><span class="t">Introduction to AP Biology: A Crash Course Manual</span><span class="v">Amazon KDP &middot; 2026</span></div>
+      <div class="pub"><span class="t">Biology in the Living Earth and Systems: A Crash Course Manual</span><span class="v">Amazon KDP &middot; 2024</span></div>
+      <div class="pub"><span class="t">Computational Neurostimulation Device Design for Alzheimer's Disease</span><span class="v">Journal of Student Research &middot; 2024</span></div>
+      <div class="pub"><span class="t">Impact of Social Isolation on Adolescent &amp; Pediatric Neuroplasticity</span><span class="v">Harvard OpenBio &middot; 2024, 2025</span></div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="page" id="page-projects">
+    <div class="page-head">
+      <span class="eyebrow">Fig. 5 &mdash; Projects</span>
+      <h2>Projects</h2>
+      <p>Interactive things I'm building &mdash; mostly small medical games meant to make dense clinical material actually stick. More will land here as they go live.</p>
+    </div>
+
+    <p class="post-note">Placeholders below &mdash; swap in each game with a real title, blurb, and play link once it's ready.</p>
+
+    <div class="proj-grid">
+      <div class="proj">
+        <span class="ptag">Web game &middot; in development</span>
+        <h3>Project One</h3>
+        <p>A short description of the game: what a player does, and what they walk away understanding.</p>
+        <span class="pbtn soon">Coming soon</span>
+      </div>
+      <div class="proj">
+        <span class="ptag">Web game &middot; in development</span>
+        <h3>Project Two</h3>
+        <p>Another concept slot. Replace this with the real premise and the clinical idea it teaches.</p>
+        <span class="pbtn soon">Coming soon</span>
+      </div>
+      <div class="proj">
+        <span class="ptag">Web game &middot; in development</span>
+        <h3>Project Three</h3>
+        <p>One more slot, ready for whenever the next idea ships.</p>
+        <span class="pbtn soon">Coming soon</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section class="page" id="page-nonprofit">
+    <div class="page-head">
+      <span class="eyebrow">Fig. 2 &mdash; Community &amp; Projects</span>
+      <h2>Community &amp; Nonprofit Work</h2>
+      <p>Access &mdash; to healthcare, education, and a seat at the table &mdash; is the thread through most of this.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>Bay Health Free Clinic</h3><span class="meta">Founder &middot; 2023 &ndash; Present</span></div>
+      <p>A student-run free clinic operating weekly out of local libraries in Oakland, delivering basic health resources and services to over 1,500 unhoused individuals. I coordinate volunteers, translators, logistics, and community partnerships to widen access.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>Learnify+, Inc.</h3><span class="meta">Co-Founder &middot; 2022 &ndash; Present</span></div>
+      <p>An education nonprofit and incubator serving over 1,800 underprivileged students internationally. We've raised $22,000, trained and managed 100+ high school tutors, and launched six daughter nonprofit projects.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>Fremont Youth Commission</h3><span class="meta">President &middot; 2023 &ndash; 2025</span></div>
+      <p>Principal youth liaison to Mayor Lily Mei, advancing student-originated proposals before Fremont City Council. Directed 55+ civic initiatives and scaled programming with the Alameda County Library system &mdash; literacy resources, STEM education, and robotics mentorship.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>National Youth Poet Laureate Foundation</h3><span class="meta">Literacy Project Lead &middot; 2024 &ndash; 2025</span></div>
+      <p>Directed county-wide literary outreach with the Alameda County Library, designing a 20-workshop initiative reaching roughly 250 underserved students and distributing bookmarks that paired local youth poetry with community-service information.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>PalliShare</h3><span class="meta">Project Lead &middot; 2023 &ndash; Present</span></div>
+      <p>A digital health platform improving quality-of-life tracking for palliative care patients and families, built with Stanford MedicineX and the Stanford Department of Anesthesiology. Secured angel investment and led an interdisciplinary team alongside Stanford and USC faculty advisors.</p>
+    </div>
+  </section>
+
+  <!-- MUSIC & POETRY -->
+  <section class="page" id="page-music">
+    <div class="page-head">
+      <span class="eyebrow">Fig. 3 &mdash; Music &amp; Poetry</span>
+      <h2>Music &amp; Poetry</h2>
+      <p>The part of my life that runs on feeling instead of evidence. Still rigorous about the craft &mdash; just a different kind of rigor.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>Parallel</h3><span class="meta">Debut Album</span></div>
+      <span class="role">Spotify Artist Awards &middot; Trending New Artist, 2024</span>
+      <p>Wrote, performed, and produced my debut album, which reached 20,000 streams across more than 75 countries.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>What's next</h3></div>
+      <p>Second album &mdash; coming soon?</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>Recognition in poetry</h3></div>
+      <p style="margin-top:4px;"><strong>Scholastic Art &amp; Writing Award</strong> &mdash; Gold Key, Poetry (top ~7% of 300,000+ submissions nationally).<br>
+      <strong>U.S. Congressional Certificate of Special Recognition</strong> &mdash; Office of Congressman Ro Khanna, for contributions to youth literary arts.<br>
+      <strong>Alameda County Youth Poet Laureate Contest</strong> &mdash; Vice Poet Laureate.<br>
+      <strong>President's Volunteer Service Award</strong> &mdash; Gold, for sustained literary and civic service.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><h3>A Cappella</h3></div>
+      <p>Captain, UMKC MEDleys. Previously Captain, Syncopations A Cappella.</p>
+    </div>
+  </section>
+
+  <!-- FIELD NOTES -->
+  <section class="page" id="page-blog">
+    <div class="page-head">
+      <span class="eyebrow">Fig. 4 &mdash; Field Notes</span>
+      <h2>Field Notes</h2>
+      <p>Short, unpolished thinking about medicine &mdash; clinical, cultural, whatever's on my mind that week. Not peer-reviewed, just honest.</p>
+    </div>
+
+    <p class="post-note">Starter drafts below &mdash; swap in your own posts whenever you're ready.</p>
+
+    <div class="post">
+      <div class="post-head"><h3>What Suturing Taught Me About Attention</h3><span class="date">Draft</span></div>
+      <p class="excerpt">The first time I closed an incision on my own, I understood why surgeons talk about suturing like a meditation instead of a task.</p>
+      <div class="full">
+        <p>The first time I closed an incision on my own, in a small operating theater in Gujarat, I understood why surgeons talk about suturing like a meditation instead of a task. Nobody had told me it would be slow. Every pass of the needle had to account for tension, tissue type, and how the skin would pull as it healed weeks after I was gone. There was no room to think about the next stitch until the current one was right.</p>
+        <p>I think about that a lot in lecture halls now, where attention gets pulled in six directions and rewarded for speed. Surgery punishes that instinct almost immediately. You either learn to be present for one small motion at a time, or you leave a scar that tells on you later.</p>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-head"><h3>Notes from a Rural Endocrinology Clinic</h3><span class="date">Draft</span></div>
+      <p class="excerpt">In Manila, I watched physicians manage diabetes and thyroid disease with a fraction of the diagnostic tools I'd assumed were standard.</p>
+      <div class="full">
+        <p>In a high-volume endocrinology clinic outside Manila, I watched physicians manage diabetes and thyroid disease with a fraction of the diagnostic tools I had assumed were standard. No same-day imaging. Labs that took days instead of hours. And yet the clinicians there were faster and more confident in their reasoning than almost anyone I'd shadowed before, because they had to be.</p>
+        <p>It reframed something for me about what "resource-limited" actually means. The limitation wasn't in the medicine. It was in the infrastructure around it. The clinical thinking was, if anything, sharper for the constraint.</p>
+      </div>
+    </div>
+
+    <div class="post">
+      <div class="post-head"><h3>The Space Between a Diagnosis and a Person</h3><span class="date">Draft</span></div>
+      <p class="excerpt">Taking a patient history in the ED is never really about the history. It's about the ten seconds before someone decides to trust you.</p>
+      <div class="full">
+        <p>Taking a patient history in the emergency department is never really about the history. The facts come out fine, eventually, whether or not you're good at your job. What varies is the ten seconds before that, when someone decides whether to trust a stranger holding a clipboard with information about their body they haven't even told their family yet.</p>
+        <p>I used to think good clinical communication meant asking the right questions in the right order. I'm starting to think it mostly means noticing when a patient is deciding whether you're safe, and slowing down for exactly that long.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer><p>Ashwika Jani &middot; Kansas City, MO &middot; Built with care, one branch at a time.</p></footer>
+
+<script>
+// ===== TREE GENERATOR =====
+// ---- vector helpers ----
+const V = (x, y) => ({ x, y });
+const add = (a, b) => V(a.x + b.x, a.y + b.y);
+const lerp = (a, b, t) => a + (b - a) * t;
+
+function cubic(p0, c1, c2, p3, t) {
+  const u = 1 - t;
+  const x = u*u*u*p0.x + 3*u*u*t*c1.x + 3*u*t*t*c2.x + t*t*t*p3.x;
+  const y = u*u*u*p0.y + 3*u*u*t*c1.y + 3*u*t*t*c2.y + t*t*t*p3.y;
+  return V(x, y);
+}
+function cubicTan(p0, c1, c2, p3, t) {
+  const u = 1 - t;
+  const x = 3*u*u*(c1.x-p0.x) + 6*u*t*(c2.x-c1.x) + 3*t*t*(p3.x-c2.x);
+  const y = 3*u*u*(c1.y-p0.y) + 6*u*t*(c2.y-c1.y) + 3*t*t*(p3.y-c2.y);
+  const m = Math.hypot(x, y) || 1;
+  return V(x/m, y/m);
+}
+const perp = t => V(-t.y, t.x);
+const f = n => Math.round(n * 100) / 100;
+
+// tapering ribbon (filled path) along a cubic bezier
+function ribbon(p0, c1, c2, p3, wBase, wTip, steps = 26, easePow = 0.72) {
+  const left = [], right = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const P = cubic(p0, c1, c2, p3, t);
+    const N = perp(cubicTan(p0, c1, c2, p3, t));
+    const w = lerp(wBase, wTip, Math.pow(t, easePow)) / 2;
+    left.push(V(P.x + N.x*w, P.y + N.y*w));
+    right.push(V(P.x - N.x*w, P.y - N.y*w));
+  }
+  let d = `M ${f(left[0].x)},${f(left[0].y)}`;
+  for (let i = 1; i < left.length; i++) d += ` L ${f(left[i].x)},${f(left[i].y)}`;
+  for (let i = right.length - 1; i >= 0; i--) d += ` L ${f(right[i].x)},${f(right[i].y)}`;
+  return d + ' Z';
+}
+
+// small almond leaf
+function leaf(x, y, angle, len, wid) {
+  const dx = Math.cos(angle), dy = Math.sin(angle);
+  const px = -dy, py = dx; // perpendicular
+  const tx = x + dx*len, ty = y + dy*len;
+  const m1x = x + dx*len*0.5 + px*wid, m1y = y + dy*len*0.5 + py*wid;
+  const m2x = x + dx*len*0.5 - px*wid, m2y = y + dy*len*0.5 - py*wid;
+  return `M ${f(x)},${f(y)} Q ${f(m1x)},${f(m1y)} ${f(tx)},${f(ty)} Q ${f(m2x)},${f(m2y)} ${f(x)},${f(y)} Z`;
+}
+
+// ---- tree definition ----
+const CX = 320;
+
+// primary branches: tip position, emergence height on trunk, label, page
+const branches = [
+  { tip: V(320,  92), y0: 300, label: 'Science Writing', page: 'research', side: 'center' },
+  { tip: V(214, 112), y0: 306, label: 'Community Health', page: 'nonprofit', side: 'left' },
+  { tip: V(426, 112), y0: 306, label: 'Youth Advocacy',  page: 'nonprofit', side: 'right' },
+  { tip: V(146, 156), y0: 314, label: 'Poetry',          page: 'music',     side: 'left' },
+  { tip: V(498, 156), y0: 314, label: 'Research',        page: 'research',  side: 'right' },
+  { tip: V( 92, 232), y0: 326, label: 'Songwriting',     page: 'music',     side: 'left' },
+  { tip: V(552, 232), y0: 326, label: 'Clinical Medicine', page: 'research', side: 'right' },
+  { tip: V(140, 312), y0: 342, label: 'A Cappella',      page: 'music',     side: 'left' },
+  { tip: V(506, 312), y0: 342, label: 'Learnify+',       page: 'nonprofit', side: 'right' },
+];
+
+function branchCtrls(p0, tip) {
+  const rise = p0.y - tip.y;
+  const c1 = V(p0.x + (tip.x - p0.x)*0.10, p0.y - Math.max(46, rise*0.58 + 30));
+  const c2 = V(tip.x + (CX - tip.x)*0.32, tip.y + Math.min(38, rise*0.30 + 12));
+  return { c1, c2 };
+}
+
+function buildTree() {
+  let branchPaths = '';
+  let leafPaths = '';
+  let nodes = '';
+
+  // roots
+  const rootBase = V(CX, 520);
+  const roots = [
+    { tip: V(196, 636), c1: V(292, 560), c2: V(232, 600), w: 12 },
+    { tip: V(258, 650), c1: V(304, 566), c2: V(272, 614), w: 10 },
+    { tip: V(320, 646), c1: V(320, 566), c2: V(320, 610), w: 11 },
+    { tip: V(384, 650), c1: V(336, 566), c2: V(368, 614), w: 10 },
+    { tip: V(446, 636), c1: V(348, 560), c2: V(408, 600), w: 12 },
+    { tip: V(150, 610), c1: V(276, 556), c2: V(198, 588), w: 7 },
+    { tip: V(492, 610), c1: V(364, 556), c2: V(442, 588), w: 7 },
+  ];
+  roots.forEach(r => {
+    branchPaths += `<path d="${ribbon(rootBase, r.c1, r.c2, r.tip, r.w, 0.8)}" fill="url(#goldGrad)"/>`;
+  });
+
+  // woven trunk (two strands crossing — a quiet double-helix nod)
+  const trunkBase = V(CX, 522), trunkTop = V(CX, 306);
+  function strand(sign) {
+    // sample a wavy centerline and offset into a ribbon
+    const steps = 30, amp = 15, waves = 2.3;
+    const left = [], right = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const y = lerp(trunkBase.y, trunkTop.y, t);
+      const x = CX + sign * amp * Math.sin(t * Math.PI * waves);
+      const w = lerp(15, 9, t) / 2;
+      // approximate normal as mostly-horizontal
+      const dx = sign * amp * Math.cos(t * Math.PI * waves) * (Math.PI*waves) / steps;
+      const dy = (trunkTop.y - trunkBase.y) / steps;
+      const m = Math.hypot(dx, dy) || 1;
+      const nx = -dy/m, ny = dx/m;
+      left.push(V(x + nx*w, y + ny*w));
+      right.push(V(x - nx*w, y - ny*w));
+    }
+    let d = `M ${f(left[0].x)},${f(left[0].y)}`;
+    for (let i = 1; i < left.length; i++) d += ` L ${f(left[i].x)},${f(left[i].y)}`;
+    for (let i = right.length - 1; i >= 0; i--) d += ` L ${f(right[i].x)},${f(right[i].y)}`;
+    return d + ' Z';
+  }
+  branchPaths += `<path d="${strand(1)}" fill="url(#goldGrad)"/>`;
+  branchPaths += `<path d="${strand(-1)}" fill="url(#goldGrad)" opacity="0.85"/>`;
+
+  // primary branches + leaves + nodes
+  branches.forEach((b, idx) => {
+    const p0 = V(CX + (idx % 2 === 0 ? 6 : -6), b.y0);
+    const { c1, c2 } = branchCtrls(p0, b.tip);
+    branchPaths += `<path d="${ribbon(p0, c1, c2, b.tip, 11, 1.4)}" fill="url(#goldGrad)"/>`;
+
+    // a few dainty leaves partway along the branch
+    [0.5, 0.68, 0.84].forEach((t, i) => {
+      const P = cubic(p0, c1, c2, b.tip, t);
+      const T = cubicTan(p0, c1, c2, b.tip, t);
+      const base = Math.atan2(T.y, T.x);
+      const off = (i % 2 === 0 ? 1 : -1) * 0.8;
+      leafPaths += `<path d="${leaf(P.x, P.y, base + off, 13, 3.6)}" class="leaf" opacity="0.85"/>`;
+    });
+
+    // node = a dainty terminal leaf marker (highlights pink on hover) + label
+    const t = b.tip;
+    const tt = cubicTan(p0, c1, c2, b.tip, 1);
+    const nang = Math.atan2(tt.y, tt.x);
+    const nbx = t.x - Math.cos(nang) * 7, nby = t.y - Math.sin(nang) * 7;
+    let lx, ly, anchor, hitX, hitW;
+    const labelW = b.label.length * 7.1;
+    if (b.side === 'left') { lx = t.x - 16; ly = t.y + 4; anchor = 'end'; hitX = t.x - 16 - labelW; hitW = labelW + 34; }
+    else if (b.side === 'right') { lx = t.x + 16; ly = t.y + 4; anchor = 'start'; hitX = t.x - 14; hitW = labelW + 34; }
+    else { lx = t.x; ly = t.y - 18; anchor = 'middle'; hitX = t.x - labelW/2 - 6; hitW = labelW + 12; }
+    const hitY = (b.side === 'center') ? t.y - 32 : t.y - 15;
+
+    nodes += `<g class="leaf-node" data-page="${b.page}">`
+      + `<rect class="hit" x="${f(hitX)}" y="${f(hitY)}" width="${f(hitW)}" height="30"/>`
+      + `<path class="node-leaf" d="${leaf(f(nbx), f(nby), nang, 15, 4.6)}"/>`
+      + `<text class="leaf-label" x="${f(lx)}" y="${f(ly)}" text-anchor="${anchor}">${b.label}</text>`
+      + `</g>`;
+  });
+
+  return { branchPaths, leafPaths, nodes };
+}
+
+
+
+function treeSVG(){
+  let { branchPaths, leafPaths, nodes } = buildTree();
+  return `<svg viewBox="0 0 700 680" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Interactive tree of Ashwika's work">
+    <defs>
+      <linearGradient id="goldGrad" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="#9C6B27"/>
+        <stop offset="0.5" stop-color="#C0913F"/>
+        <stop offset="1" stop-color="#DAB96E"/>
+      </linearGradient>
+    </defs>
+    ${branchPaths}${leafPaths}${nodes}
+  </svg>`;
+}
+
+// ===== NAV =====
+const navButtons = document.querySelectorAll('nav.links button');
+const pages = document.querySelectorAll('.page');
+function showPage(name){
+  pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
+  navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  document.getElementById('navLinks').classList.remove('open');
+  window.scrollTo({top:0});
+}
+navButtons.forEach(b => b.addEventListener('click', () => showPage(b.dataset.page)));
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// mount tree + wire node clicks
+document.getElementById('treeMount').innerHTML = treeSVG();
+document.querySelectorAll('.leaf-node').forEach(n => {
+  n.addEventListener('click', () => showPage(n.dataset.page));
+});
+
+// blog expand
+document.querySelectorAll('.post').forEach(post => {
+  post.addEventListener('click', () => post.classList.toggle('open'));
+});
+
+// ===== FACT OF THE DAY =====
+const facts = [
+    "The human heart beats roughly 100,000 times a day, pumping about 2,000 gallons of blood.",
+    "The heart has its own electrical pacemaker, the sinoatrial node, which fires without any signal from the brain.",
+    "A drop of blood makes a complete circuit of the body in about 60 seconds.",
+    "The aorta is roughly the diameter of a garden hose, the largest artery in the body.",
+    "Capillaries are so narrow that red blood cells often pass through them in single file.",
+    "The left ventricle is the heart's strongest chamber because it pumps blood to the entire body.",
+    "Blood pressure is highest in the arteries and lowest in the veins, which is why veins need valves.",
+    "The pulmonary arteries are the only arteries that carry deoxygenated blood.",
+    "The pulmonary veins are the only veins that carry oxygenated blood.",
+    "An adult's blood vessels, laid end to end, would stretch roughly 60,000 miles.",
+    "The heart can keep beating even after being disconnected from the body, as long as it has oxygen.",
+    "Your heart rate and breathing rate naturally sync up during deep, slow breathing.",
+    "The 'lub-dub' of a heartbeat is the sound of heart valves snapping shut, not the muscle contracting.",
+    "Fetal circulation includes shortcuts that bypass the lungs, since a fetus gets oxygen from the placenta.",
+    "The coronary arteries feed the heart muscle itself, and they fill mostly between beats, not during them.",
+    "Cardiac muscle cells are joined by intercalated discs that let them contract as one coordinated unit.",
+    "The average adult has about 5 liters of blood circulating at any moment.",
+    "Standing up quickly can briefly drop blood flow to the brain, causing a moment of lightheadedness.",
+    "Red blood cells have no nucleus, giving them more room to carry oxygen but a lifespan of only about 120 days.",
+    "The body makes roughly 2 million red blood cells every second.",
+    "Bone marrow is the primary site of blood cell production in adults.",
+    "Hemoglobin contains iron, which is what binds oxygen and gives blood its red color.",
+    "Blood type is determined by antigens on the surface of red blood cells.",
+    "AB negative, the rarest common blood type, is found in less than 1% of people.",
+    "Type O negative blood is the universal donor for red cell transfusions.",
+    "Platelets are not whole cells but fragments that break off from larger cells called megakaryocytes.",
+    "White blood cells make up less than 1% of blood volume but are central to immune defense.",
+    "Plasma, the liquid part of blood, is about 90% water and makes up over half of blood volume.",
+    "When you donate blood, your body replaces the fluid within about 24 hours and the red cells within weeks.",
+    "Fetal hemoglobin binds oxygen more tightly than adult hemoglobin, helping the fetus pull oxygen from the mother.",
+    "A bruise changes color as the body breaks down hemoglobin from leaked blood.",
+    "Clotting involves a cascade of more than a dozen proteins working in sequence.",
+    "Flattened out, the surface area of the human lungs is roughly the size of a tennis court.",
+    "You breathe about 20,000 times a day without usually thinking about it.",
+    "The right lung has three lobes, but the left has only two to make room for the heart.",
+    "The lungs contain around 300 to 500 million tiny air sacs called alveoli.",
+    "The diaphragm is the main muscle of breathing, contracting downward to pull air in.",
+    "Hiccups are involuntary spasms of the diaphragm, and their evolutionary purpose is still debated.",
+    "You lose a surprising amount of water each day simply by exhaling humidified air.",
+    "A yawn is thought to help regulate brain temperature, among other proposed functions.",
+    "The trachea splits into two bronchi, which branch like a tree into ever-smaller airways.",
+    "Cilia lining the airways sweep mucus and trapped particles upward, away from the lungs.",
+    "A single sneeze can send droplets traveling at speeds of up to 100 miles per hour.",
+    "Cough reflexes can generate air speeds fast enough to clear the airway of irritants.",
+    "Oxygen and carbon dioxide cross the alveolar wall purely by diffusion, no pumping required.",
+    "Holding your breath eventually fails because rising carbon dioxide, not falling oxygen, drives the urge to breathe.",
+    "The human brain generates enough electricity to power a small LED light bulb.",
+    "The brain uses about 20% of the body's energy despite being only about 2% of its weight.",
+    "Neurons can transmit signals at speeds exceeding 250 miles per hour.",
+    "The adult brain contains roughly 86 billion neurons.",
+    "The gut is sometimes called the second brain because it holds over 100 million neurons.",
+    "The vagus nerve runs from the brainstem to the colon, linking the brain to nearly every major organ.",
+    "Myelin, the fatty sheath around nerves, dramatically speeds up signal transmission.",
+    "The cerebellum holds more than half the brain's neurons despite its small size.",
+    "Pain signals travel to the brain, but the brain itself has no pain receptors.",
+    "Your brain finalizes much of its structural maturation only in the mid-twenties.",
+    "The blood-brain barrier tightly controls which substances can pass from blood into the brain.",
+    "REM sleep, when most dreaming happens, is accompanied by temporary paralysis of most voluntary muscles.",
+    "Short-term memories are consolidated into long-term storage largely during sleep.",
+    "The hippocampus is essential for forming new memories, which is why its damage causes amnesia.",
+    "Phantom limb sensations show that the brain's body map can persist after a limb is gone.",
+    "Reflexes like the knee-jerk bypass the brain entirely, routing through the spinal cord for speed.",
+    "The left and right hemispheres communicate through a thick band of fibers called the corpus callosum.",
+    "Neuroplasticity lets the brain rewire itself in response to learning and injury throughout life.",
+    "Cerebrospinal fluid cushions the brain and lets it effectively float, reducing its felt weight.",
+    "The optic nerve carries more than a million nerve fibers from each eye to the brain.",
+    "The human eye can distinguish about 10 million different colors under ideal conditions.",
+    "Taste buds are replaced roughly every two weeks, part of why taste preferences shift over a lifetime.",
+    "Some estimates suggest the human nose can distinguish over a trillion distinct odors.",
+    "The stapes in the middle ear, the smallest bone in the body, is about the size of a grain of rice.",
+    "Your ears never stop working, even in sleep, though the brain filters most sounds out.",
+    "The cornea is one of the few tissues in the body with no blood vessels, getting oxygen directly from air.",
+    "Smell and memory are tightly linked because olfactory signals pass close to memory centers in the brain.",
+    "The retina actually senses an upside-down image, which the brain flips right-side up.",
+    "Each eye has a natural blind spot where the optic nerve exits, which the brain fills in.",
+    "Balance depends on fluid-filled canals in the inner ear that detect head movement.",
+    "Goosebumps are a vestigial reflex that once raised fur to trap heat or appear larger.",
+    "The tongue map dividing regions for each taste is a myth; all tastes are detectable across the tongue.",
+    "Humans can detect a single photon of light under the right dark-adapted conditions.",
+    "Earwax is mildly antibacterial and helps protect and clean the ear canal.",
+    "Your stomach lining replaces itself every few days, otherwise the acid it produces would digest it.",
+    "The small intestine is about 20 feet long, far longer than the large intestine.",
+    "Stomach acid is strong enough to dissolve many metals, roughly the acidity of battery acid.",
+    "The body produces roughly 1 to 1.5 liters of saliva every day.",
+    "Most nutrient absorption happens in the small intestine, not the stomach.",
+    "The liver performs over 500 distinct functions, from detoxification to protein synthesis.",
+    "The liver can regenerate itself even after up to 70% of its tissue is removed.",
+    "Peristalsis, the wave-like squeezing of the gut, means you could swallow even upside down.",
+    "The gut microbiome contains trillions of bacteria that aid digestion and train the immune system.",
+    "Bile made by the liver and stored in the gallbladder helps break down dietary fats.",
+    "The appendix may serve as a reservoir for beneficial gut bacteria after illness.",
+    "Your intestines are lined with millions of tiny projections called villi that boost absorption area.",
+    "It takes food roughly 24 to 72 hours to travel the full length of the digestive tract.",
+    "The pancreas makes both digestive enzymes and the hormones insulin and glucagon.",
+    "Chewing thoroughly begins digestion, as saliva contains enzymes that start breaking down starch.",
+    "Cortisol, the so-called stress hormone, also helps regulate metabolism and inflammation.",
+    "Insulin was first used to treat a patient in 1922, turning type 1 diabetes from a fatal diagnosis into a manageable one.",
+    "The thyroid gland sets the body's metabolic pace by releasing hormones that affect nearly every cell.",
+    "Melatonin, released in darkness, helps signal the body that it is time to sleep.",
+    "Adrenaline can boost strength and speed within seconds during a fight-or-flight response.",
+    "The pituitary gland, about the size of a pea, is often called the body's master gland.",
+    "Growth hormone is released mainly during deep sleep, which is why sleep matters for children's growth.",
+    "Oxytocin, tied to bonding and childbirth, is sometimes nicknamed the love hormone.",
+    "Blood sugar is kept in a narrow range by the opposing actions of insulin and glucagon.",
+    "The adrenal glands sit atop the kidneys and produce hormones essential to stress and salt balance.",
+    "Hormones can act at extremely low concentrations, sometimes just a few molecules per cell.",
+    "Leptin, made by fat cells, signals the brain about the body's energy stores.",
+    "Adults have 206 bones, but babies are born with about 300, many of which fuse over time.",
+    "Bone, gram for gram, is stronger than steel, but far lighter thanks to its porous structure.",
+    "The femur, the thigh bone, is the longest and strongest bone in the human body.",
+    "The human skeleton is fully formed around age 25, when the last growth plates fuse.",
+    "Muscle tissue is denser than fat, part of why body composition matters more than weight alone.",
+    "The strongest muscle for its size is the masseter, the jaw muscle used for chewing.",
+    "Bones are living tissue, constantly being broken down and rebuilt throughout life.",
+    "There are more than 600 muscles in the human body.",
+    "The smallest muscle, the stapedius in the ear, helps protect hearing from loud sounds.",
+    "Tendons connect muscle to bone, while ligaments connect bone to bone.",
+    "The Achilles tendon is the largest and strongest tendon in the body.",
+    "You use dozens of muscles just to take a single step.",
+    "Muscles can only pull, never push, which is why they work in opposing pairs.",
+    "Shivering is rapid muscle contraction that generates heat to warm the body.",
+    "Cartilage cushions joints and has no blood supply, so it heals slowly.",
+    "The hands and feet together contain more than half of all the bones in the body.",
+    "Bone marrow makes blood cells, while the hard outer bone provides structure and mineral storage.",
+    "Astronauts can lose measurable bone density in space because bones need mechanical load to stay strong.",
+    "Skin is the body's largest organ, covering roughly 20 square feet in an adult.",
+    "You shed around 30,000 to 40,000 dead skin cells every minute.",
+    "Fingernails grow faster than toenails, and fastest on the hand you use most.",
+    "Fingerprints form before birth and are unique even among identical twins.",
+    "Sweat itself is nearly odorless; body odor comes from bacteria breaking it down.",
+    "The skin helps make vitamin D when exposed to sunlight.",
+    "Human skin hosts a rich ecosystem of bacteria that help defend against harmful microbes.",
+    "Goosebumps and hair-raising are controlled by tiny muscles at the base of each hair follicle.",
+    "The outer layer of skin, the epidermis, completely renews itself about every month.",
+    "Melanin, the pigment that colors skin and hair, also helps protect against UV damage.",
+    "Calluses are the skin's way of thickening to protect against repeated friction.",
+    "Wound healing proceeds through overlapping stages of clotting, inflammation, and tissue rebuilding.",
+    "The first vaccine, developed by Edward Jenner in 1796, used cowpox material to protect against smallpox.",
+    "Fever is a defense mechanism; many pathogens replicate poorly at higher temperatures.",
+    "The lymphatic system drains excess fluid and carries immune cells throughout the body.",
+    "Antibodies are Y-shaped proteins that lock onto specific invaders to mark them for destruction.",
+    "The thymus, where T cells mature, is largest in childhood and shrinks with age.",
+    "Memory cells let the immune system respond faster the second time it meets a pathogen.",
+    "The spleen filters blood and helps recycle old red blood cells.",
+    "Inflammation is the body's rapid first response to injury or infection.",
+    "Breast milk passes protective antibodies from mother to infant.",
+    "The skin, mucus, and stomach acid form the body's first line of physical defense.",
+    "Allergies happen when the immune system overreacts to a normally harmless substance.",
+    "Vaccines work by training the immune system without causing the actual disease.",
+    "Natural killer cells can destroy infected or cancerous cells without prior exposure.",
+    "Autoimmune diseases occur when the immune system mistakenly attacks the body's own tissues.",
+    "The kidneys filter your entire blood supply about 30 times a day.",
+    "Each kidney contains roughly a million tiny filtering units called nephrons.",
+    "The kidneys help regulate blood pressure, red blood cell production, and vitamin D activation.",
+    "Urine color is a rough guide to hydration, ranging from pale yellow to deep amber.",
+    "You can survive with a single functioning kidney, which is why living kidney donation is possible.",
+    "The bladder can comfortably hold about 400 to 600 milliliters of urine.",
+    "The kidneys precisely balance the body's salt and water to keep blood chemistry stable.",
+    "Most of the water filtered by the kidneys is reabsorbed rather than excreted.",
+    "The body contains around 37 trillion cells, yet only about half the DNA in it is technically human; the rest belongs to microbes.",
+    "If stretched out, the DNA in a single cell would be about two meters long.",
+    "All the DNA in your body, uncoiled and joined, could reach far beyond the moon.",
+    "Every cell in your body carries the same DNA, but different genes switch on in different tissues.",
+    "Mitochondria, the cell's power plants, carry their own separate DNA inherited from the mother.",
+    "Telomeres are protective caps on chromosomes that shorten each time a cell divides.",
+    "Humans share roughly 60% of their genes with a banana at the most basic biochemical level.",
+    "Red blood cells are among the few human cells that lack a nucleus and DNA.",
+    "The human genome contains around 20,000 protein-coding genes, fewer than once expected.",
+    "Stem cells are unspecialized cells that can develop into many different cell types.",
+    "Cell division errors are usually caught and repaired, but rare escapes can lead to cancer.",
+    "Proteins are built from just 20 amino acids arranged in countless combinations.",
+    "CRISPR gene-editing tools were adapted from a bacterial defense system against viruses.",
+    "Enzymes speed up chemical reactions in cells, sometimes by millions of times.",
+    "A human fetus develops fingerprints by around the third or fourth month of pregnancy.",
+    "The heart is one of the first organs to form and begins beating within a few weeks of conception.",
+    "A newborn's head is proportionally huge because the brain develops early and rapidly.",
+    "Babies are born with a natural diving reflex that briefly slows breathing underwater.",
+    "The sense of hearing develops before birth, and fetuses can respond to sounds in the womb.",
+    "Human pregnancy averages about 40 weeks measured from the last menstrual period.",
+    "A newborn cannot make tears for the first few weeks of life.",
+    "Infants have a stronger sense of smell relative to their other senses early on.",
+    "The soft spots on a baby's skull allow the brain room to grow before the bones fuse.",
+    "At birth, a baby's vision is blurry and best focused at about the distance to a caregiver's face.",
+    "The body maintains a core temperature near 37 degrees Celsius through constant fine adjustments.",
+    "Most of your body weight is water, typically around 55 to 60% in adults.",
+    "Basal metabolism, the energy used at rest, accounts for most of your daily calorie burn.",
+    "Brown fat generates heat rather than storing energy, and is more abundant in infants.",
+    "The body can store only a limited amount of carbohydrate, mainly as glycogen in liver and muscle.",
+    "Lactic acid buildup during hard exercise contributes to muscle fatigue, then clears with rest.",
+    "Your body temperature naturally dips at night and rises through the day on a daily rhythm.",
+    "Dehydration of just a small percentage of body weight can noticeably impair concentration.",
+    "Humans spend roughly a third of their lives asleep.",
+    "The body's internal clock runs on a cycle close to, but not exactly, 24 hours.",
+    "Sleep occurs in cycles of roughly 90 minutes, moving through light, deep, and REM stages.",
+    "Deep sleep is when the body does much of its physical repair and immune strengthening.",
+    "Consistent lack of sleep is linked to impaired memory, mood, and immune function.",
+    "Jet lag happens when the body's internal clock is out of sync with local time.",
+    "Blue light in the evening can suppress melatonin and delay sleep.",
+    "Newborns sleep up to 16 hours a day, but in short scattered bursts.",
+    "Penicillin's discovery in 1928 was an accident; mold contaminating a culture had killed the bacteria around it.",
+    "The first successful organ transplant, a kidney, was performed in 1954 between identical twins.",
+    "The stethoscope was invented in 1816 partly to avoid pressing an ear directly to a patient's chest.",
+    "Anesthesia for surgery was first publicly demonstrated with ether in 1846.",
+    "Handwashing was championed by Ignaz Semmelweis in the 1840s, long before germs were understood.",
+    "The structure of DNA was described in 1953, transforming biology and medicine.",
+    "X-rays were discovered in 1895 and almost immediately used to image bones.",
+    "The world's first heart transplant was performed in 1967.",
+    "Smallpox is the only human disease ever declared fully eradicated, in 1980.",
+    "The germ theory of disease, established in the 1800s, revolutionized how illness was understood.",
+    "Louis Pasteur developed pasteurization and early vaccines in the 19th century.",
+    "The polio vaccine, introduced in the 1950s, dramatically reduced a once-feared paralytic disease.",
+    "Blood typing, discovered in 1901, made safe transfusions possible.",
+    "The first MRI scan of a human body was performed in the 1970s.",
+    "Insulin's isolation earned a Nobel Prize just two years after its discovery.",
+    "The double-helix model united genetics and biochemistry in a single elegant structure.",
+    "CT and MRI measure different things; one uses X-rays for density, the other magnetic fields for tissue water content.",
+    "An electrocardiogram records the heart's electrical activity through electrodes on the skin.",
+    "Ultrasound uses sound waves too high for humans to hear to create real-time images.",
+    "MRI does not use ionizing radiation, making it safer for repeated imaging.",
+    "A stethoscope amplifies internal sounds like heartbeats, breathing, and blood flow.",
+    "Pulse oximeters estimate blood oxygen by shining light through a fingertip.",
+    "PET scans reveal metabolic activity by tracking a radioactive tracer in tissues.",
+    "Blood tests can reveal organ function, infection, and nutritional status from a small sample.",
+    "The placebo effect is strong enough that it's routinely accounted for in clinical trial design.",
+    "Aspirin comes from a compound originally derived from willow bark, used medicinally for millennia.",
+    "Many drugs are broken down by the liver before reaching the rest of the body.",
+    "A drug's half-life is the time it takes for half of it to leave the bloodstream.",
+    "General anesthesia doesn't just cause sleep; it produces a reversible, controlled loss of consciousness.",
+    "Caffeine works by blocking adenosine, the molecule that builds up and makes you feel sleepy.",
+    "Antibiotics work against bacteria but have no effect on viruses.",
+    "Overusing antibiotics accelerates the rise of resistant bacteria.",
+    "Local anesthetics block nerve signals in a small area without affecting consciousness.",
+    "Some medications must be taken with food to slow absorption or protect the stomach.",
+    "There are more bacterial cells associated with your body than you might expect, rivaling your own cell count.",
+    "Most bacteria in and on the body are harmless or actively beneficial.",
+    "Viruses are not technically alive on their own; they need a host cell to reproduce.",
+    "A single bacterium can multiply into millions within hours under ideal conditions.",
+    "Gram staining, developed in the 1880s, still sorts bacteria into two broad groups today.",
+    "Some gut bacteria produce vitamins the body cannot make on its own, like certain B vitamins and vitamin K.",
+    "Antibiotic resistance can spread between bacteria by direct transfer of genetic material.",
+    "Fungi, bacteria, and viruses each require very different treatment approaches.",
+    "The human body has four main blood types further split by the Rh factor.",
+    "The hyoid bone in the neck is the only bone not directly connected to another bone.",
+    "The femur can support many times a person's body weight before breaking.",
+    "Your nose and ears keep growing subtly throughout life due to cartilage changes.",
+    "The human eye can move in rapid jumps called saccades several times per second.",
+    "The pinky finger contributes a surprisingly large share of the hand's gripping strength.",
+    "There are more nerve endings in the fingertips than in most other parts of the body.",
+    "The human body has natural asymmetries; most internal organs are offset to one side.",
+    "The largest internal organ is the liver, while the largest overall is the skin.",
+    "The corpus callosum contains around 200 million nerve fibers linking the brain's halves.",
+    "On average, a person walks the equivalent of several times around the Earth in a lifetime.",
+    "The human body produces enough heat over a day to be measurable in a closed room.",
+    "You blink around 15 to 20 times a minute, briefly cleaning and moisturizing the eyes.",
+    "The strongest sense tied to memory is smell, thanks to its direct brain connections.",
+    "A full bladder sends stretch signals to the brain that create the urge to urinate.",
+    "The knee is the largest joint in the human body.",
+    "The human voice is produced by vocal folds vibrating as air passes between them.",
+    "Tears come in different types: basal, reflex, and emotional, each with a slightly different makeup.",
+    "Nerve signals and hormones are the body's two main communication systems, one fast and one slow.",
+    "The body constantly balances hundreds of variables to maintain internal stability, a process called homeostasis.",
+    "The right side of the heart pumps blood to the lungs, and the left side pumps it to the body.",
+    "Heart valves ensure blood flows in only one direction through the heart.",
+    "Blood returning to the heart from the body is lower in oxygen and higher in carbon dioxide.",
+    "The heart adjusts its rate constantly based on signals about the body's needs.",
+    "Exercise strengthens the heart, letting it pump more blood with each beat.",
+    "Cold temperatures cause blood vessels near the skin to narrow, conserving core heat.",
+    "Blushing is caused by blood vessels in the face widening in response to emotion.",
+    "The carotid arteries in the neck carry a major share of blood to the brain.",
+    "The brain cannot store oxygen and depends on a constant blood supply to function.",
+    "Just a few minutes without oxygen can cause lasting brain damage.",
+    "The spinal cord is the main highway carrying signals between brain and body.",
+    "Sensory neurons carry information inward, while motor neurons carry commands outward.",
+    "The autonomic nervous system runs background functions like heartbeat and digestion automatically.",
+    "Dopamine plays key roles in movement, motivation, and reward.",
+    "Serotonin influences mood, sleep, and appetite, and much of it is made in the gut.",
+    "The brain's wrinkles increase its surface area, packing more cortex into the skull.",
+    "Learning a new skill physically changes connections between neurons.",
+    "The sympathetic nervous system prepares the body for action, while the parasympathetic calms it down.",
+    "Fiber isn't fully digested but helps move food through the gut and feeds beneficial bacteria.",
+    "The stomach can stretch considerably to accommodate a large meal.",
+    "Vitamin C is needed to make collagen, essential for skin, blood vessels, and healing.",
+    "The body cannot make essential amino acids, so they must come from the diet.",
+    "Water is involved in nearly every chemical reaction in the body.",
+    "Most of the body's calcium is stored in bones and teeth.",
+    "Iron deficiency is one of the most common nutritional shortfalls worldwide.",
+    "The gut and brain constantly communicate through what's called the gut-brain axis.",
+    "Lymph nodes swell during infection as immune cells multiply to fight invaders.",
+    "The body can mount a specific defense against pathogens it has never encountered before.",
+    "Blood clots normally dissolve on their own once a wound has healed.",
+    "Anemia occurs when there aren't enough healthy red blood cells to carry oxygen.",
+    "Vaccination has prevented countless deaths from diseases like measles and diphtheria.",
+    "White blood cells can squeeze out of blood vessels to reach sites of infection.",
+    "The complement system is a group of blood proteins that helps destroy pathogens.",
+    "Blood donation is safe because the body rapidly replenishes what is given.",
+    "The skin contains distinct receptors for touch, pressure, temperature, and pain.",
+    "Pupils widen in dim light to let in more light and narrow in bright light to protect the retina.",
+    "The lens of the eye changes shape to focus on near or far objects.",
+    "Hair and nails are made largely of keratin, the same protein family found in skin.",
+    "The average person has around 100,000 hairs on their scalp.",
+    "Body hair helps regulate temperature and provides a layer of sensory feedback.",
+    "Cold and warm receptors in the skin can be temporarily fooled by certain chemicals.",
+    "The sense of proprioception lets you know your body's position without looking.",
+    "The hypothalamus links the nervous and endocrine systems, coordinating many basic drives.",
+    "Hunger and fullness are governed by a network of hormones and brain signals.",
+    "Thyroid hormones influence heart rate, temperature, and energy levels.",
+    "Stress hormones are useful in short bursts but harmful when chronically elevated.",
+    "The body tightly regulates blood calcium because it's vital for nerves and muscles.",
+    "Metabolic rate varies with age, muscle mass, activity, and genetics.",
+    "Sex hormones influence far more than reproduction, including bone and heart health.",
+    "The pancreas releases insulin after meals to help cells take up glucose.",
+    "Height is influenced by many genes plus nutrition and overall health during growth.",
+    "Growth plates in children's bones are where new bone lengthens until adulthood.",
+    "The lens of the eye stiffens with age, making close focus harder over time.",
+    "Muscle mass tends to decline with age unless maintained through activity.",
+    "Skin loses elasticity over time as collagen production slows.",
+    "The senses of taste and smell often gradually dull with age.",
+    "Bone density typically peaks in early adulthood and slowly declines afterward.",
+    "Regular activity supports heart, brain, bone, and metabolic health across the lifespan.",
+    "Clean water and sanitation are among the greatest contributors to human life expectancy.",
+    "Handwashing remains one of the simplest, most effective ways to prevent infection.",
+    "Screening tests aim to catch diseases early, when they are more treatable.",
+    "Herd immunity protects vulnerable people when enough of a population is immune.",
+    "Seatbelts and helmets prevent a large share of serious injuries.",
+    "Blood pressure and cholesterol checks help catch silent cardiovascular risks.",
+    "Vaccination schedules are timed to protect people when they are most vulnerable.",
+    "Mental and physical health are deeply interconnected, each affecting the other.",
+    "The word 'muscle' comes from a Latin term meaning little mouse, from how muscles ripple under skin.",
+    "Yawning appears to be contagious, and the reason is still not fully understood.",
+    "The human body glows very faintly with light too dim for the eye to see.",
+    "No two people, not even identical twins, have exactly the same set of gut microbes.",
+    "The body replaces most of its cells over time, though at very different rates by tissue.",
+    "Laughter briefly increases heart rate and can transiently relax blood vessels.",
+    "The knee-jerk reflex is used clinically to test nerve and spinal cord function.",
+    "Motion sickness arises from a mismatch between what the eyes see and the inner ear senses.",
+    "The human body is remarkably good at maintaining balance through constant tiny corrections.",
+    "Chronic stress can affect nearly every system in the body over time.",
+    "The heart's electrical signal can be detected on the skin's surface, which is how ECGs work.",
+    "Most of the dust in a home is made partly of shed human skin cells.",
+    "The average adult takes in and processes a striking amount of air, food, and water daily.",
+    "Bones store minerals the body can draw on when blood levels drop.",
+    "The body's clotting and anticlotting systems are constantly balanced to prevent both bleeding and clots.",
+    "A healthy resting heart rate for adults typically falls between 60 and 100 beats per minute.",
+    "The largest artery, the aorta, arches directly off the heart's left ventricle.",
+    "Sweating is the body's main way of cooling itself through evaporation.",
+    "The liver is the only internal organ that can regrow a substantial portion of itself.",
+    "Every breath mixes fresh air with air already in the lungs, never fully emptying them.",
+    "The cornea heals faster than almost any other tissue, often within a day or two.",
+    "Nerve cells in the adult brain generally do not divide, unlike most other body cells.",
+    "The human body contains trace amounts of many metals essential to health, like zinc and copper.",
+    "Saliva begins the digestion of starches before food even leaves the mouth.",
+    "The heart pumps with enough force to send blood spurting several feet if a major artery is cut.",
+    "Bile gives stool its characteristic brown color.",
+    "The lungs are the only organs light enough to float on water because of their air content.",
+    "Nerve impulses are electrical within a cell but chemical between cells, crossing gaps called synapses.",
+    "The body's largest cell is the female egg, just barely visible to the naked eye.",
+    "The smallest cells include sperm, which carry only half the genetic material of other cells.",
+    "Bone marrow transplants can rebuild a patient's entire blood and immune system.",
+    "The tongue is a muscular organ made of several muscles working in different directions.",
+    "The gallbladder concentrates bile to many times its original strength.",
+    "Nails grow roughly three to four millimeters per month on average.",
+    "The human heart is about the size of a clenched fist.",
+    "The brain floats in cerebrospinal fluid, which also carries away waste during sleep.",
+    "Muscle memory is really the nervous system becoming more efficient at a practiced movement.",
+    "The esophagus moves food to the stomach by muscle contractions, not gravity.",
+    "Vitamin D acts more like a hormone than a typical vitamin in the body.",
+    "The retina's rod cells handle dim light, while cone cells handle color and detail.",
+    "Blood plasma can be separated and used to treat clotting disorders and burns.",
+    "The human body has natural circadian rhythms in temperature, hormones, and alertness.",
+    "Wisdom teeth are evolutionary leftovers from ancestors with larger jaws and rougher diets.",
+    "The sinuses are air-filled spaces in the skull that lighten the head and shape the voice.",
+    "Cartilage in the joints is smoother than ice, allowing nearly frictionless movement.",
+    "The body's sense of thirst lags behind actual hydration needs, so mild dehydration is common."
+  ];
+function dayOfYear(d){const s=new Date(d.getFullYear(),0,0);return Math.floor((d-s)/86400000);}
+document.getElementById('factText').textContent = facts[dayOfYear(new Date()) % facts.length];
+</script>
+</body>
+</html>
